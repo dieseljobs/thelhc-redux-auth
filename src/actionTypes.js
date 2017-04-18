@@ -1,0 +1,6 @@
+export const SET_TOKEN = '@@auth/SET_TOKEN'
+export const SET_IS_CHECKING = '@@auth/SET_IS_CHECKING'
+export const SET_AUTHENTICATED = '@@auth/SET_AUTHENTICATED'
+export const SET_USER = '@@auth/SET_USER'
+export const EXPIRE_FLAG = '@@auth/EXPIRE_FLAG'
+export const SET_SPOOF_USER = '@@auth/SET_SPOOF_USER'
