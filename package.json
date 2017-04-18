@@ -4,7 +4,10 @@
   "description": "TheLHC custom user authorization integration for redux",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha $npm_package_options_mocha"
+    "compile": "babel -d dist/ src/",
+    "prepublish": "npm run test && npm run compile",
+    "test": "mocha $npm_package_options_mocha",
+    "test:watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -12,6 +15,9 @@
   },
   "author": "Aaron Kaczmarek <aaronmichaelmusic@gmail.com>",
   "license": "ISC",
+  "options": {
+    "mocha": "--compilers js:babel-register --recursive"
+  },
   "bugs": {
     "url": "https://github.com/dieseljobs/thelhc-redux-auth/issues"
   },
@@ -24,5 +30,12 @@
     "babel-register": "^6.24.1",
     "expect": "^1.20.2",
     "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "axios": "^0.16.1",
+    "immutability-helper": "^2.1.2",
+    "path-to-regexp": "^1.7.0",
+    "redux-observers": "^2.0.1",
+    "reselect": "^3.0.0"
   }
 }
