@@ -1,4 +1,3 @@
-//import axios from 'axios'
 import pathToRegexp from 'path-to-regexp'
 import {
   USER_TOKEN,

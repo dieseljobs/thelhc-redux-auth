@@ -1,4 +1,3 @@
-import axios from 'axios'
 import * as types from './actionTypes'
 import { USER_TOKEN,
           USER_TOKEN_CHECKED,
@@ -118,7 +117,7 @@ export const setUserAuth = ( user, token = null ) => {
  *
  * @return {function}
  */
-export const checkForUser = ( tokenEndpoint, userEndpoint ) => {
+export const checkForUser = ( client, tokenEndpoint, userEndpoint ) => {
   return ( dispatch ) => {
     // Let our app know we've started the user checks
     dispatch( setIsChecking( true ) )
@@ -161,7 +160,7 @@ export const checkForUser = ( tokenEndpoint, userEndpoint ) => {
           if ( sessionStorage.getItem( USER_TOKEN_CHECKED ) ) {
             reject( 'no token' )
           } else {
-            axios.get( tokenEndpoint )
+            client.get( tokenEndpoint )
               .then( ( response ) => {
                 // we're expecting a 200 response with either a token object in
                 // the response if authenticated, or an empty response if not
@@ -215,7 +214,7 @@ export const checkForUser = ( tokenEndpoint, userEndpoint ) => {
           // fresh user from the getUser API to make sure the user is still
           // authenticated in the backend as well refreshing the stored token.
           // Our interceptors will handle updating the new token in storage
-          axios.get( userEndpoint )
+          client.get( userEndpoint )
             .then( response => {
               resolve( [ response.data ] )
             })
@@ -284,9 +283,9 @@ export const resetAuth = ( expireFlag = false ) => {
  * @param  {object} params
  * @return {function}
  */
-export const spoofUser = ( endpoint, params ) => {
+export const spoofUser = ( client, endpoint, params ) => {
   return ( dispatch ) => {
-    return axios.post( endpoint, params )
+    return client.post( endpoint, params )
         .then( ( response ) => {
           dispatch( setSpoofUser( response.data ) )
 
