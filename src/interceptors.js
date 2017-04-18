@@ -1,4 +1,4 @@
-import axios from 'axios'
+//import axios from 'axios'
 import pathToRegexp from 'path-to-regexp'
 import {
   USER_TOKEN,
@@ -14,7 +14,7 @@ import { resetAuth, setToken } from './actions'
  * @param  {Object} [config={}]
  * @return {void}
  */
-const createInterceptors = ( { dispatch, getState }, config = {} ) => {
+const createInterceptors = ( axios, { dispatch, getState }, config = {} ) => {
 
   /**
    * Expected authorization/token error responses
