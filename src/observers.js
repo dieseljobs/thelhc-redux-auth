@@ -1,4 +1,5 @@
 import { observer } from 'redux-observers'
+import { setAndBroadcastSession, removeAndBroadcastSession } from 'lhc-js-lib'
 import { USER_TOKEN, STORED_USER, STORED_SPOOF_USER } from './constants'
 
 /**
@@ -30,26 +31,31 @@ const tokenObserver = observer(
 const authUserObserver = observer(
   state => { return state.auth.user },
   ( dispatch, current ) => {
-    if ( current ) {
-      sessionStorage.setItem( STORED_USER, JSON.stringify( current ) )
+    if ( Object.keys( current ).length ) {
+      setAndBroadcastSession( STORED_USER, current )
     } else {
       let storedUser = sessionStorage.getItem( STORED_USER )
       if ( storedUser ) {
-        sessionStorage.removeItem( STORED_USER )
+        removeAndBroadcastSession( STORED_USER )
       }
     }
   }
 )
 
+/**
+ * Observe the state of the spoofed user.
+ *
+ * @type {function}
+ */
 const authSpoofUserObserver = observer(
  state => { return state.auth.spoofUser },
  ( dispatch, current ) => {
-   if ( current ) {
-     sessionStorage.setItem( STORED_SPOOF_USER, JSON.stringify( current ) )
+   if ( Object.keys( current ).length ) {
+     setAndBroadcastSession( STORED_SPOOF_USER, current )
    } else {
      let storedUser = sessionStorage.getItem( STORED_SPOOF_USER )
      if ( storedUser ) {
-       sessionStorage.removeItem( STORED_SPOOF_USER )
+       removeAndBroadcastSession( STORED_SPOOF_USER )
      }
    }
  }
