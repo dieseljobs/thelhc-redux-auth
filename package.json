@@ -1,6 +1,6 @@
 {
   "name": "thelhc-redux-auth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "TheLHC custom user authorization integration for redux",
   "main": "dist/index.js",
   "scripts": {
