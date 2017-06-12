@@ -184,7 +184,7 @@ Dispatch action to set authenticated user in store
     
 #### `spoofUser([client], [spoofUserEndpoint], [params])`
 
-Dispatch action to set authenticated user in store
+Dispatch action to retrieve a spoof user object and set to store
 
   - `client` *(Object)*
 
