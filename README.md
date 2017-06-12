@@ -83,7 +83,7 @@ npm install --save thelhc-redux-auth
 
 #### `checkForUser([client], [tokenEndpoint], [userEndpoint])`
 
-Creates an observer.
+Root-level initiation for user auth session.  Checks for auth, fetches, and sets keys in store.
 
   - `client` *(Object)*
 
@@ -107,7 +107,7 @@ _This should be called only once at the root of the application after the redux 
 
 #### `createInterceptors([client], [store])`
 
-Creates an observer.
+Creates interceptors on Http client to pass JWT tokens on requests, and catch auth errors/rejections in responses.
 
   - `client` *(Object)*
 
@@ -123,7 +123,7 @@ _This should be called only once at the root of the application before the React
 
 #### `createIsAdminSelector([computationBlock])`
 
-Creates an observer.
+Creates a selector for determining if user has admin privileges.
 
   - `computationBlock(user) => boolean result` *(Function)*
 
@@ -184,7 +184,7 @@ Dispatch action to set authenticated user in store
     
 #### `spoofUser([client], [spoofUserEndpoint], [params])`
 
-Dispatch action to set authenticated user in store
+Dispatch action to retrieve a spoof user object and set to store
 
   - `client` *(Object)*
 
