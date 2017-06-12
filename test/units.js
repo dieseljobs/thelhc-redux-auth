@@ -3,10 +3,13 @@ import {
   actionTypes,
   checkForUser,
   createInterceptors,
+  createIsAdminSelector,
+  isSpoof,
   observers,
   reducer,
   resetAuth,
-  selectors,
+  selectAbsoluteUser,
+  selectUser,
   setAuthenticated,
   setIsChecking,
   setToken,
@@ -25,6 +28,12 @@ describe('redux-thunk-status', () => {
   it('exports createInterceptors', () => {
     expect(createInterceptors).toBeTruthy()
   })
+  it('exports createIsAdminSelector', () => {
+    expect(createInterceptors).toBeTruthy()
+  })
+  it('exports isSpoof', () => {
+    expect(isSpoof).toBeTruthy()
+  })
   it('exports observers', () => {
     expect(observers).toBeTruthy()
   })
@@ -34,8 +43,11 @@ describe('redux-thunk-status', () => {
   it('exports resetAuth', () => {
     expect(resetAuth).toBeTruthy()
   })
-  it('exports selectors', () => {
-    expect(selectors).toBeTruthy()
+  it('exports selectAbsoluteUser', () => {
+    expect(selectAbsoluteUser).toBeTruthy()
+  })
+  it('exports selectUser', () => {
+    expect(selectUser).toBeTruthy()
   })
   it('exports setIsChecking', () => {
     expect(setIsChecking).toBeTruthy()

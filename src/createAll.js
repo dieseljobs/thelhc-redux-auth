@@ -12,7 +12,7 @@ const createAll = () => {
     createInterceptors,
     reducer: createReducer(),
     observers,
-    selectors
+    ...selectors
   }
 }
 

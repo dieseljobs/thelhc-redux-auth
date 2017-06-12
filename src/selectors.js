@@ -6,7 +6,7 @@ import { createSelector } from 'reselect'
  * @param  {Object} state
  * @return {Object}
  */
-export const absoluteUser = ( state ) => {
+export const selectAbsoluteUser = ( state ) => {
   return state.auth.user
 }
 
@@ -16,7 +16,7 @@ export const absoluteUser = ( state ) => {
  * @param  {Object} state
  * @return {Object}
  */
-export const user = ( state ) => {
+export const selectUser = ( state ) => {
   return state.auth.spoofUser || state.auth.user || null
 }
 
@@ -24,7 +24,7 @@ export const user = ( state ) => {
  * Determine if user is spoof
  *
  * @param  {Object}  state
- * @return {Boolean}       
+ * @return {Boolean}
  */
 export const isSpoof = ( state ) => {
   return state.auth.spoofUser ? true : false
@@ -37,7 +37,7 @@ export const isSpoof = ( state ) => {
  * @param  {Function} isAdminBlock
  * @return {Boolean}
  */
-export const isAdmin = ( isAdminBlock ) => {
+export const createIsAdminSelector = ( isAdminBlock ) => {
   return createSelector(
     absoluteUser,
     isAdminBlock
