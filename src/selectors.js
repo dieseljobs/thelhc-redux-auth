@@ -39,7 +39,7 @@ export const isSpoof = ( state ) => {
  */
 export const createIsAdminSelector = ( isAdminBlock ) => {
   return createSelector(
-    absoluteUser,
+    selectAbsoluteUser,
     isAdminBlock
   )
 }
