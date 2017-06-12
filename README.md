@@ -81,3 +81,123 @@ npm install --save thelhc-redux-auth
 ## API
 
 
+#### `checkForUser([client], [tokenEndpoint], [userEndpoint])`
+
+Creates an observer.
+
+  - `client` *(Object)*
+
+    The HTTP client (Axios) instance used to make async requests.
+
+    Must be passed explicitly for redux-auth to attach interceptors.
+
+  - `tokenEndpoint` *(String)*
+
+    URL for retrieving valid JWT tokens for users authenticated in backend.  
+    
+    Expects response with token string if authenticated, or null/blank if not-authenticated.
+
+  - `userEndpoint` *(String)*
+
+    URL for retrieving user object with valid JWT token.  
+    
+    Expects response with JSON representation of user model.
+
+_This should be called only once at the root of the application after the redux store has been initialized, ideally in a high-level root component_
+
+#### `createInterceptors([client], [store])`
+
+Creates an observer.
+
+  - `client` *(Object)*
+
+    The HTTP client (Axios) instance used to make async requests.
+
+    Must be passed explicitly for redux-auth to attach interceptors.
+
+  - `store` *(Object)*
+
+    Redux store instance.
+
+_This should be called only once at the root of the application before the React DOM is mounted/rendered_
+
+#### `createIsAdminSelector([computationBlock])`
+
+Creates an observer.
+
+  - `computationBlock(user) => boolean result` *(Function)*
+
+    An anonymous function to determine if passed `user` argument has admin priveleges.
+
+    Must return boolean value.
+
+    ```js
+    import { createIsAdminSelector } from 'thelhc-redux-auth'
+    const mapStateToProps = ( state ) => ({
+        isAdmin: createIsAdminSelector( user => user.level >= 7 )( state )
+    })
+    ```
+
+#### `isSpoof([state])`
+
+Selector to determine if authenticated user is spoofed.
+
+  - `state` *(Object)*
+
+    Redux state object
+
+#### `resetAuth([expireFlag = false])`
+
+Selector to determine if authenticated user is spoofed.
+
+  - `expireFlag` *(Boolean)*
+
+    When true, redux-auth will signal an expired flag to indicate the user session has been closed due to inactivity or rejected jwt.
+    
+#### `selectAbsoluteUser([state])`
+
+Select the authenticated user, ignoring spoofed user (if present)
+
+  - `state` *(Object)*
+
+    Redux state object
+
+#### `selectUser([state])`
+
+Selects the authenticated user, defaulting to spoofUser first, the falling back to normal user or null if not authenticated
+
+  - `state` *(Object)*
+
+    Redux state object
+
+#### `setUserAuth([user], [token = null])`
+
+Dispatch action to set authenticated user in store
+
+  - `user` *(Object)*
+
+    Authenticated user object.
+    
+  - `token` *(String)*
+
+    Pass a new JWT token to store.  (defaults to `token` key of user object)
+    
+#### `spoofUser([client], [spoofUserEndpoint], [params])`
+
+Dispatch action to set authenticated user in store
+
+  - `client` *(Object)*
+
+    The HTTP client (Axios) instance used to make async requests.
+
+    Must be passed explicitly for redux-auth to attach interceptors.
+
+  - `spoofUserEndpoint` *(String)*
+
+    URL to make POST request for a spoof user.  
+    
+    Expects JSON representation of spoofed user model.
+
+  - `params` *(Object)*
+
+    Parameters to send to [spoofUserEndpoint] API.  
