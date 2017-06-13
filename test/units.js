@@ -18,7 +18,7 @@ import {
   spoofUser
 } from '../src'
 
-describe('redux-thunk-status', () => {
+describe('exports', () => {
   it('exports actionTypes', () => {
     expect(actionTypes).toBeTruthy()
   })
