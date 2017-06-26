@@ -17,7 +17,14 @@ export const selectAbsoluteUser = ( state ) => {
  * @return {Object}
  */
 export const selectUser = ( state ) => {
-  return state.auth.spoofUser || state.auth.user || null
+  const { auth: { spoofUser, user } } = state
+  if ( spoofUser && Object.keys( spoofUser ).length ) {
+    return spoofUser
+  } else if ( user && Object.keys( user ).length ) {
+    return user
+  } else {
+    return null
+  }
 }
 
 /**
