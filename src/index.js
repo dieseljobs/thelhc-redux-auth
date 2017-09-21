@@ -3,7 +3,6 @@ import createAll from './createAll'
 export const {
   appInitializer,
   actionTypes,
-  checkForUser,
   createInterceptors,
   createIsAdminSelector,
   isSpoof,
@@ -18,8 +17,6 @@ export const {
   setToken,
   setUser,
   setUserAuth,
-  spoofUser,
   STORED_TOKEN,
-  STORED_USER,
-  STORED_SPOOF_USER
+  STORED_USER
 } = createAll()

@@ -3,7 +3,7 @@ import {
   STORED_TOKEN,
   STORED_USER
 } from './constants'
-import { jwtToStore, jwtRejected, resetAuth, setToken } from './actions'
+import { jwtToStore, jwtRejected, setToken } from './actions'
 
 /**
  * Create interceptors for http service and provided store
@@ -74,12 +74,10 @@ const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) =>
       // Look for token in response body
       if ( response.data && response.data.token ) {
         const { data: { token } } = response
-        console.log('token in response', response.data.token )
         dispatch( jwtToStore( token ) )
       // Else look for refreshed auth token in headers
       } else if ( response.headers && response.headers.authorization ) {
         const token = response.headers.authorization.replace( /Bearer\s/, '' )
-        console.log('token in header')
         dispatch( jwtToStore( token ) )
       }
 
@@ -87,22 +85,14 @@ const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) =>
     }, ( error ) => {
     // Do something with response error if authentication error
     if ( isBadTokenResponse( error.response ) ) {
-      console.log('BAD TOKEN RESPONSE', appConfig)
       const { onSessionReject, afterSessionReject } = appConfig
-
       // always tear down token
       dispatch( setToken( '' ) )
-
       if ( onSessionReject ) {
         dispatch( onSessionReject() )
       } else {
         dispatch( jwtRejected( afterSessionReject ) )
       }
-
-      // if user is stored, we need to send expire flag to notify user
-      //const storedUser = sessionStorage.getItem( STORED_USER )
-      //const shouldExpire = Boolean( storedUser )
-      //dispatch( resetAuth( shouldExpire ) )
     }
 
     return Promise.reject( error )
