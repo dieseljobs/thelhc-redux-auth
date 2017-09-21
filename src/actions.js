@@ -98,8 +98,13 @@ export const jwtToStore = ( token, next ) => {
     console.log(claims)
 
     dispatch( setToken( token ) )
+    // catch user
     if ( usr ) {
       dispatch( authenticateUser( usr ) )
+    }
+    // catch spoof user
+    if ( spoof ) {
+      dispatch( setSpoofUser( spoof ) )
     }
 
     if ( next ) {
