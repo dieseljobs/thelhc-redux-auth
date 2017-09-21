@@ -1,5 +1,6 @@
 import expect from 'expect'
 import {
+  appInitializer,
   actionTypes,
   checkForUser,
   createInterceptors,
@@ -19,6 +20,9 @@ import {
 } from '../src'
 
 describe('exports', () => {
+  it('exports appInitializer', () => {
+    expect(appInitializer).toBeTruthy()
+  })
   it('exports actionTypes', () => {
     expect(actionTypes).toBeTruthy()
   })

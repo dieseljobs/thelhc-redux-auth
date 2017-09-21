@@ -1,9 +1,9 @@
 import pathToRegexp from 'path-to-regexp'
 import {
-  USER_TOKEN,
+  STORED_TOKEN,
   STORED_USER
 } from './constants'
-import { resetAuth, setToken } from './actions'
+import { jwtToStore, jwtRejected, resetAuth, setToken } from './actions'
 
 /**
  * Create interceptors for http service and provided store
@@ -13,7 +13,7 @@ import { resetAuth, setToken } from './actions'
  * @param  {Object} [config={}]
  * @return {void}
  */
-const createInterceptors = ( axios, { dispatch, getState }, config = {} ) => {
+const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) => {
 
   /**
    * Expected authorization/token error responses
@@ -21,29 +21,12 @@ const createInterceptors = ( axios, { dispatch, getState }, config = {} ) => {
    */
   const AUTH_ERROR_RESPONSES = [
     'token_not_provided',
-    'user_not_found',
+    //'user_not_found',
     'token_absent',
     'token_expired',
     'token_blacklisted',
     'token_invalid'
   ]
-
-  /**
-   * Check if a url matches the spoofBlacklist (if configured)
-   *
-   * @param  {String}  url
-   * @return {Boolean}
-   */
-  const isUrlSpoofBlacklisted = ( url ) => {
-    const { spoofBlacklist } = config
-    if ( ! spoofBlacklist ) return false
-    for ( const path of spoofBlacklist ) {
-      let re = pathToRegexp( path )
-      if ( re.test(url) ) return true
-    }
-
-    return false
-  }
 
   /**
    * Check if response meets criteria of a rejected/invalid token request response
@@ -70,18 +53,11 @@ const createInterceptors = ( axios, { dispatch, getState }, config = {} ) => {
   }
 
 
-  axios.interceptors.request.use( ( config ) => {
-    const { url } = config
-    const { auth: { spoofUser } } = getState()
-    let token
-    // Pass token if available
-    // First check for user spoofing and pass the associated token
-    // Otherwise look for stored token in localStorage
-    if ( spoofUser && ! isUrlSpoofBlacklisted( url ) ) {
-      token = spoofUser.token
-    } else {
-      token = localStorage.getItem( USER_TOKEN )
-    }
+  client.interceptors.request.use( ( config ) => {
+    const shortToken = sessionStorage.getItem( STORED_TOKEN )
+    let token = localStorage.getItem( STORED_TOKEN )
+    if ( shortToken ) token = shortToken
+
     // Set Authorization header with token
     if ( token ) {
       config.headers.Authorization = 'Bearer ' + token
@@ -94,22 +70,39 @@ const createInterceptors = ( axios, { dispatch, getState }, config = {} ) => {
     return Promise.reject( error )
   })
 
-  axios.interceptors.response.use( ( response ) => {
-    // Do something with response data
-    // Look for refreshed auth token
-    if ( response.headers && response.headers.authorization ) {
-      let newToken = response.headers.authorization.replace( /Bearer\s/, '' )
-      dispatch( setToken( newToken ) )
-    }
+  client.interceptors.response.use( ( response ) => {
+      // Look for token in response body
+      if ( response.data && response.data.token ) {
+        const { data: { token } } = response
+        console.log('token in response', response.data.token )
+        dispatch( jwtToStore( token ) )
+      // Else look for refreshed auth token in headers
+      } else if ( response.headers && response.headers.authorization ) {
+        const token = response.headers.authorization.replace( /Bearer\s/, '' )
+        console.log('token in header')
+        dispatch( jwtToStore( token ) )
+      }
 
-    return response
-  }, ( error ) => {
+      return response
+    }, ( error ) => {
     // Do something with response error if authentication error
     if ( isBadTokenResponse( error.response ) ) {
+      console.log('BAD TOKEN RESPONSE', appConfig)
+      const { onSessionReject, afterSessionReject } = appConfig
+
+      // always tear down token
+      dispatch( setToken( '' ) )
+
+      if ( onSessionReject ) {
+        dispatch( onSessionReject() )
+      } else {
+        dispatch( jwtRejected( afterSessionReject ) )
+      }
+
       // if user is stored, we need to send expire flag to notify user
-      const storedUser = sessionStorage.getItem( STORED_USER )
-      const shouldExpire = Boolean( storedUser )
-      dispatch( resetAuth( shouldExpire ) )
+      //const storedUser = sessionStorage.getItem( STORED_USER )
+      //const shouldExpire = Boolean( storedUser )
+      //dispatch( resetAuth( shouldExpire ) )
     }
 
     return Promise.reject( error )

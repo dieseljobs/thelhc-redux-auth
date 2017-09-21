@@ -1,5 +1,5 @@
-import { USER_TOKEN,
-          USER_TOKEN_CHECKED,
+import { STORED_TOKEN,
+          STORED_TOKEN_CHECKED,
           STORED_USER,
           STORED_SPOOF_USER } from './constants'
 
@@ -8,7 +8,7 @@ import { USER_TOKEN,
  * First check if our token is in localStorage
  * If not, we'll send a GetToken API request to double-check for a token
  * from the backend.  We'll also make sure to flag that we made this check
- * by setting USER_TOKEN_CHECKED in sessionStorage so as not make this request
+ * by setting STORED_TOKEN_CHECKED in sessionStorage so as not make this request
  * on subsequent page views.
  * If found in storage of get request, we will resolve with the token.
  * Else we will reject
@@ -18,18 +18,18 @@ import { USER_TOKEN,
 const getTokenPromise = ( client, tokenEndpoint ) => {
   return new Promise( ( resolve, reject ) => {
 
-    const storedToken = localStorage.getItem( USER_TOKEN )
+    const storedToken = localStorage.getItem( STORED_TOKEN )
     if ( storedToken ) {
       resolve( storedToken )
     } else {
-      if ( sessionStorage.getItem( USER_TOKEN_CHECKED ) ) {
+      if ( sessionStorage.getItem( STORED_TOKEN_CHECKED ) ) {
         reject( 'no token' )
       } else {
         client.get( tokenEndpoint )
           .then( ( response ) => {
             // we're expecting a 200 response with either a token object in
             // the response if authenticated, or an empty response if not
-            sessionStorage.setItem( USER_TOKEN_CHECKED, 1 )
+            sessionStorage.setItem( STORED_TOKEN_CHECKED, 1 )
             if ( response.data.token ) {
               const { token } = response.data
               // dispatching to setToken will work some magic, including
@@ -41,7 +41,7 @@ const getTokenPromise = ( client, tokenEndpoint ) => {
             }
           })
           .catch( () => {
-            sessionStorage.setItem( USER_TOKEN_CHECKED, 1 )
+            sessionStorage.setItem( STORED_TOKEN_CHECKED, 1 )
             reject( 'no token' )
           })
       }

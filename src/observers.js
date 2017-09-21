@@ -1,6 +1,6 @@
 import { observer } from 'redux-observers'
 import { setAndBroadcastSession, removeAndBroadcastSession } from 'lhc-js-lib'
-import { USER_TOKEN, STORED_USER, STORED_SPOOF_USER } from './constants'
+import { STORED_TOKEN, STORED_USER, STORED_SPOOF_USER } from './constants'
 
 /**
  * Observe the state of token.  If anything changes, update the locally
@@ -12,11 +12,11 @@ const tokenObserver = observer(
   state => { return state.auth.token },
   ( dispatch, current ) => {
     if ( current ) {
-      localStorage.setItem( USER_TOKEN, current )
+      localStorage.setItem( STORED_TOKEN, current )
     } else {
-      let storedToken = localStorage.getItem( USER_TOKEN )
+      let storedToken = localStorage.getItem( STORED_TOKEN )
       if ( storedToken ) {
-        localStorage.removeItem( USER_TOKEN )
+        localStorage.removeItem( STORED_TOKEN )
       }
     }
   }

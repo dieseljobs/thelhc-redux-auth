@@ -1,9 +1,9 @@
+import { parseJwt } from 'lhc-js-lib'
 import * as types from './actionTypes'
-import { USER_TOKEN,
-          USER_TOKEN_CHECKED,
-          STORED_USER,
-          STORED_SPOOF_USER } from './constants'
-
+import { STORED_TOKEN,
+         STORED_TOKEN_CHECKED,
+         STORED_USER,
+         STORED_SPOOF_USER } from './constants'
 import { checkForUserPromise } from './promises'
 
 /**
@@ -82,6 +82,57 @@ export const setSpoofUser = ( user ) => {
     user
   }
 }
+
+export const authenticateUser = ( user ) => {
+  return ( dispatch ) => {
+    dispatch( setUser( user ) )
+    dispatch( setAuthenticated( true ) )
+  }
+}
+
+export const jwtToStore = ( token, next ) => {
+  return ( dispatch ) => {
+    console.log('jwtToStore')
+    const claims = parseJwt( token, 1 )
+    const { usr, spoof } = claims
+    console.log(claims)
+
+    dispatch( setToken( token ) )
+    if ( usr ) {
+      dispatch( authenticateUser( usr ) )
+    }
+
+    if ( next ) {
+      dispatch( next( token ) )
+    }
+    console.log('jwttoredux done')
+  }
+}
+
+export const jwtRejected = ( next ) => {
+  return ( dispatch ) => {
+    console.log('jwtRejected')
+    dispatch( setAuthenticated( false ) )
+    dispatch( setUser({
+    }) )
+    // set token to blank ("") instead of null
+    // app init defaults to null, setting to blank will trigger observer and
+    // ensure token gets deleted from local storage
+    dispatch( setToken( '' ) )
+
+    if ( next ) {
+
+      dispatch( next() )
+    }
+  }
+}
+
+
+
+
+
+
+////// DEPRECATED ///////
 
 /**
  * THUNK
