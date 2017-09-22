@@ -1,8 +1,4 @@
-import pathToRegexp from 'path-to-regexp'
-import {
-  STORED_TOKEN,
-  STORED_USER
-} from './constants'
+import { STORED_TOKEN } from './constants'
 import { jwtToStore, jwtRejected, setToken } from './actions'
 
 /**
