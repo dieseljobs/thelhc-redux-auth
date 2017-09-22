@@ -73,22 +73,25 @@ export const isUserRejected = ( response ) => {
  */
 export const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) => {
 
-  client.interceptors.request.use( ( config ) => {
-    const shortToken = sessionStorage.getItem( STORED_TOKEN )
-    let token = localStorage.getItem( STORED_TOKEN )
-    if ( shortToken ) token = shortToken
+  client.interceptors.request.use(
+    ( config ) => {
+      const shortToken = sessionStorage.getItem( STORED_TOKEN )
+      let token = localStorage.getItem( STORED_TOKEN )
+      if ( shortToken ) token = shortToken
 
-    // Set Authorization header with token
-    if ( token ) {
-      config.headers.Authorization = 'Bearer ' + token
+      // Set Authorization header with token
+      if ( token ) {
+        config.headers.Authorization = 'Bearer ' + token
+      }
+
+      return config
+    },
+    ( error ) => {
+      // Do something with request error
+
+      return Promise.reject( error )
     }
-
-    return config
-  }, ( error ) => {
-    // Do something with request error
-
-    return Promise.reject( error )
-  })
+  )
 
   client.interceptors.response.use(
     ( response ) => {
@@ -115,7 +118,7 @@ export const createInterceptors = ( client, { dispatch, getState }, appConfig = 
         } else {
           dispatch( jwtRejected( afterSessionReject ) )
         }
-      // catch jwt rejection specific to bad user 
+      // catch jwt rejection specific to bad user
       } else if ( isUserRejected( error.response ) ) {
         // always tear down token
         dispatch( setToken( '' ) )

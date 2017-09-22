@@ -53,19 +53,6 @@ export const setAuthenticated = ( val ) => {
 }
 
 /**
- * Update expireFlag value action creator
- *
- * @param  {bool} val
- * @return {object}
- */
-export const expire = ( val ) => {
-  return ({
-    type: types.EXPIRE_FLAG,
-    val
-  })
-}
-
-/**
  * Set the spoof user
  *
  * @param {Object} user
