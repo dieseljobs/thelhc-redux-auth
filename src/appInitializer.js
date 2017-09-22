@@ -1,6 +1,6 @@
 import { STORED_TOKEN, STORED_USER } from './constants'
 import { jwtToStore } from './actions'
-import createInterceptors from './interceptors'
+import { createInterceptors } from './interceptors'
 
 /**
  * Initialize app promise
@@ -50,7 +50,7 @@ const appInitializer = ( config ) => {
           resolve( 'ok' )
         })
         .catch( error => {
-          // reject promise with error 
+          // reject promise with error
           reject( error )
         })
     }

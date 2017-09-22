@@ -17,6 +17,5 @@ export const {
   setToken,
   setUser,
   setUserAuth,
-  STORED_TOKEN,
-  STORED_USER
+  STORED_TOKEN
 } = createAll()

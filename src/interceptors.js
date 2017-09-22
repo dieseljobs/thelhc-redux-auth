@@ -1,5 +1,67 @@
-import { STORED_TOKEN } from './constants'
+import { STORED_TOKEN, TOKEN_ERROR_RESPONSES, USER_ERROR_RESPONSES } from './constants'
 import { jwtToStore, jwtRejected, setToken } from './actions'
+
+/**
+ * Check if response is rejected by API
+ * Will be 400 or 403 response with object/array response data
+ *
+ * @param  {Object}  response
+ * @return {Boolean}
+ */
+export const isResponseRejected = ( response ) => {
+  const { status, data } = response
+
+  return (
+    [ 400, 403 ].indexOf( status ) > -1 &&
+    Object.prototype.toString.call( data ) === '[object Array]'
+  )
+}
+
+/**
+ * Determine if error response is token rejection
+ *
+ * @param  {Object}  response
+ * @return {Boolean}
+ */
+export const isTokenRejected = ( response ) => {
+  const { data } = response
+  // check that response matches rejected criteria
+  if ( !isResponseRejected ) {
+    return false
+  }
+
+  // check if response matches any expected bad token responses
+  for ( const _err in data ) {
+    if ( TOKEN_ERROR_RESPONSES.indexOf( data[_err] ) > -1 ) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Determine if error response is user token rejection
+ *
+ * @param  {Object}  response
+ * @return {Boolean}
+ */
+export const isUserRejected = ( response ) => {
+  const { data } = response
+  // check that response matches rejected criteria
+  if ( !isResponseRejected ) {
+    return false
+  }
+
+  // check if response matches any expected bad user responses
+  for ( const _err in data ) {
+    if ( USER_ERROR_RESPONSES.indexOf( data[_err] ) > -1 ) {
+      return true
+    }
+  }
+
+  return false
+}
 
 /**
  * Create interceptors for http service and provided store
@@ -9,45 +71,7 @@ import { jwtToStore, jwtRejected, setToken } from './actions'
  * @param  {Object} [config={}]
  * @return {void}
  */
-const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) => {
-
-  /**
-   * Expected authorization/token error responses
-   * @type {Array}
-   */
-  const AUTH_ERROR_RESPONSES = [
-    'token_not_provided',
-    //'user_not_found',
-    'token_absent',
-    'token_expired',
-    'token_blacklisted',
-    'token_invalid'
-  ]
-
-  /**
-   * Check if response meets criteria of a rejected/invalid token request response
-   *
-   * @param  {Object}  response
-   * @return {Boolean}
-   */
-  const isBadTokenResponse = ( response ) => {
-    const { status, data } = response
-    // if status is not 400 or 403 return false
-    if ( [ 400, 403 ].indexOf( status ) === -1 )
-      return false
-    // if response data is not an array, return false
-    if ( Object.prototype.toString.call( data ) !== '[object Array]' )
-      return false
-    // check if response matches any expected bad token responses
-    for ( const _err in data ) {
-      if ( AUTH_ERROR_RESPONSES.indexOf( data[_err] ) > -1 ) {
-        return true
-      }
-    }
-
-    return false
-  }
-
+export const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) => {
 
   client.interceptors.request.use( ( config ) => {
     const shortToken = sessionStorage.getItem( STORED_TOKEN )
@@ -66,7 +90,8 @@ const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) =>
     return Promise.reject( error )
   })
 
-  client.interceptors.response.use( ( response ) => {
+  client.interceptors.response.use(
+    ( response ) => {
       // Look for token in response body
       if ( response.data && response.data.token ) {
         const { data: { token } } = response
@@ -78,21 +103,28 @@ const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) =>
       }
 
       return response
-    }, ( error ) => {
-    // Do something with response error if authentication error
-    if ( isBadTokenResponse( error.response ) ) {
-      const { onSessionReject, afterSessionReject } = appConfig
-      // always tear down token
-      dispatch( setToken( '' ) )
-      if ( onSessionReject ) {
-        dispatch( onSessionReject() )
-      } else {
-        dispatch( jwtRejected( afterSessionReject ) )
+    },
+    ( error ) => {
+      const { onSessionReject, afterSessionReject, onUserReject } = appConfig
+      // catch jwt rejection responses from api
+      if ( isTokenRejected( error.response ) ) {
+        // always tear down token
+        dispatch( setToken( '' ) )
+        if ( onSessionReject ) {
+          dispatch( onSessionReject() )
+        } else {
+          dispatch( jwtRejected( afterSessionReject ) )
+        }
+      // catch jwt rejection specific to bad user 
+      } else if ( isUserRejected( error.response ) ) {
+        // always tear down token
+        dispatch( setToken( '' ) )
+        if ( onUserReject ) {
+          dispatch( onUserReject() )
+        }
       }
+
+      return Promise.reject( error )
     }
-
-    return Promise.reject( error )
-  })
+  )
 }
-
-export default createInterceptors
