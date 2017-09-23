@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "immutability-helper": "^2.1.2",
-    "lhc-js-lib": "^1.2.0",
+    "lhc-js-lib": "^1.5.0",
     "path-to-regexp": "^1.7.0",
     "redux-observers": "^2.0.1",
     "reselect": "^3.0.0"
