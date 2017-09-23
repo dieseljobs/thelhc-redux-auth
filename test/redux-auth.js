@@ -1,3 +1,4 @@
+/*
 import expect from 'expect'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
@@ -139,3 +140,4 @@ describe('lhc-redux-auth integration', () => {
   })
 
 })
+*/

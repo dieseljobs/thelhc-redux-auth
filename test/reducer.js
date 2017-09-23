@@ -70,17 +70,6 @@ describe('reducer', () => {
     })
   })
 
-  it('should handle EXPIRE_FLAG', () => {
-    expect( reducer( undefined, expire( true ) ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: false,
-      token: null,
-      expireFlag: true,
-      user: {
-      }
-    })
-  })
-
   it('should handle SET_SPOOF_USER', () => {
     const spoofUser = {
       id: 2,
