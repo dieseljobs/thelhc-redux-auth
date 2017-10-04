@@ -1,6 +1,16 @@
 import { createSelector } from 'reselect'
 
 /**
+ * Select asyncInProgress status
+ *
+ * @param  {Object}  state
+ * @return {Boolean}
+ */
+export const isAsyncInProgress = ( state ) => {
+  return state.auth.asyncInProgress
+}
+
+/**
  * Get the absolute signed-in user disregarding spoofUser
  *
  * @param  {Object} state

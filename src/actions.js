@@ -2,13 +2,13 @@ import { parseJwt } from 'lhc-js-lib'
 import * as types from './actionTypes'
 
 /**
- * Set isChecking value action creator
+ * Set asyncInProgress value action creator
  *
  * @param {bool} val
  */
-export const setIsChecking = ( val ) => {
+export const setAsyncInProgress = ( val ) => {
   return ({
-    type: types.SET_IS_CHECKING,
+    type: types.SET_ASYNC_IN_PROGRESS,
     val
   })
 }
@@ -126,4 +126,20 @@ export const jwtRejected = ( next ) => {
       dispatch( next() )
     }
   }
+}
+
+
+
+////// DEPRECATED //////
+
+/**
+ * Set isChecking value action creator
+ *
+ * @param {bool} val
+ */
+export const setIsChecking = ( val ) => {
+  return ({
+    type: types.SET_IS_CHECKING,
+    val
+  })
 }
