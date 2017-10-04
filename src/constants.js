@@ -4,10 +4,8 @@
  */
 export const INITIAL_STATE = {
   asyncInProgress: false,
-  isAuthenticated: false,
   isChecking: false,
   token: null,
-  expireFlag: false,
   user: {
   }
 }

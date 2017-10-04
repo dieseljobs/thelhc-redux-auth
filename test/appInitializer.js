@@ -75,8 +75,7 @@ describe('appInitializer', () => {
         expect( store.getActions() ).toEqual( [
           { type: types.SET_TOKEN,
             token: userJwt },
-          { type: types.SET_USER, user: userFixture },
-          { type: types.SET_AUTHENTICATED, val: true }
+          { type: types.SET_USER, user: userFixture }
         ])
       })
       .catch( error => {
@@ -101,7 +100,6 @@ describe('appInitializer', () => {
           { type: types.SET_TOKEN,
             token: spoofUserJwt },
           { type: types.SET_USER, user: userFixture },
-          { type: types.SET_AUTHENTICATED, val: true },
           { type: types.SET_SPOOF_USER, user: spoofUserFixture }
         ])
       })

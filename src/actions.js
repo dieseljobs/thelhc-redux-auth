@@ -40,19 +40,6 @@ export const setUser = ( user ) => {
 }
 
 /**
- * Set authenticated value action creator
- *
- * @param {bool} val
- * @return {object}
- */
-export const setAuthenticated = ( val ) => {
-  return ({
-    type: types.SET_AUTHENTICATED,
-    val
-  })
-}
-
-/**
  * Set the spoof user
  *
  * @param {Object} user
@@ -74,7 +61,6 @@ export const setSpoofUser = ( user ) => {
 export const authenticateUser = ( user ) => {
   return ( dispatch ) => {
     dispatch( setUser( user ) )
-    dispatch( setAuthenticated( true ) )
   }
 }
 
@@ -114,7 +100,6 @@ export const jwtToStore = ( token, next = null ) => {
  */
 export const jwtRejected = ( next ) => {
   return ( dispatch ) => {
-    dispatch( setAuthenticated( false ) )
     dispatch( setUser({
     }) )
     // set token to blank ("") instead of null

@@ -2,6 +2,7 @@ import expect from 'expect'
 import { selectAbsoluteUser,
          selectUser,
          isSpoof,
+         isAuthenticated,
          isAsyncInProgress,
          createIsAdminSelector } from '../src/selectors'
 
@@ -33,6 +34,10 @@ describe('selectors', () => {
 
   it('should select user (with spoof)', () => {
     expect( selectUser( state ) ).toEqual( state.auth.spoofUser)
+  })
+
+  it('should handle isAuthenticated', () => {
+    expect( isAuthenticated( state ) ).toEqual( true )
   })
 
   it('should handle isAsyncInProgress', () => {

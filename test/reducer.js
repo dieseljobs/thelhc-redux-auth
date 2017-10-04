@@ -4,7 +4,6 @@ import { setAsyncInProgress,
          setIsChecking,
          setToken,
          setUser,
-         setAuthenticated,
          expire,
          setSpoofUser } from '../src/actions'
 import { INITIAL_STATE } from '../src/constants'
@@ -40,11 +39,6 @@ describe('reducer', () => {
     }
     const expected = Object.assign({}, INITIAL_STATE, { user })
     expect( reducer( undefined, setUser( user ) ) ).toEqual(expected)
-  })
-
-  it('should handle SET_AUTHENTICATED', () => {
-    const expected = Object.assign({}, INITIAL_STATE, { isAuthenticated: true })
-    expect( reducer( undefined, setAuthenticated( true ) ) ).toEqual(expected)
   })
 
   it('should handle SET_SPOOF_USER', () => {
