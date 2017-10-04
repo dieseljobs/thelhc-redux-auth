@@ -11,13 +11,13 @@ export const isAsyncInProgress = ( state ) => {
 }
 
 /**
- * Compute if user is authenticated from user object 
+ * Compute if user is authenticated from user object
  *
  * @param  {Object}  state
  * @return {Boolean}
  */
 export const isAuthenticated = ( state ) => {
-  return Object.keys( state.auth.user ).length > 0
+  return state.auth.user && Object.keys( state.auth.user ).length > 0
 }
 
 /**

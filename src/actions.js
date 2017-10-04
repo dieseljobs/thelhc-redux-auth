@@ -1,5 +1,6 @@
 import { parseJwt } from 'lhc-js-lib'
 import * as types from './actionTypes'
+import { isAuthenticated, isSpoof } from './selectors'
 
 /**
  * Set asyncInProgress value action creator
@@ -53,18 +54,6 @@ export const setSpoofUser = ( user ) => {
 }
 
 /**
- * Authenticate user thunk
- *
- * @param  {Object} user
- * @return {Function}
- */
-export const authenticateUser = ( user ) => {
-  return ( dispatch ) => {
-    dispatch( setUser( user ) )
-  }
-}
-
-/**
  * Push JWT claims to store
  *
  * @param  {String}   token
@@ -72,18 +61,25 @@ export const authenticateUser = ( user ) => {
  * @return {Function}
  */
 export const jwtToStore = ( token, next = null ) => {
-  return ( dispatch ) => {
+  return ( dispatch, getState ) => {
+    const state = getState()
+    const userPresent = isAuthenticated( state )
+    const spoofPresent = isSpoof( state )
     const claims = parseJwt( token, 1 )
     const { usr, spoof } = claims
     // console.log(claims)
     dispatch( setToken( token ) )
     // catch user
     if ( usr ) {
-      dispatch( authenticateUser( usr ) )
+      dispatch( setUser( usr ) )
+    } else if ( !usr && userPresent ){
+      dispatch( setUser( {} ) )
     }
     // catch spoof user
     if ( spoof ) {
       dispatch( setSpoofUser( spoof ) )
+    } else if ( !spoof && spoofPresent ) {
+      dispatch( setSpoofUser( {} ) )
     }
     // dispatch 'after' callback if present
     if ( next ) {
