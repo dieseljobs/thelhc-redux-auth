@@ -1,15 +1,13 @@
 # thelhc-redux-auth
 TheLHC JWT user authorization integration for redux
 
-## Install
+## Installation
 
 ```js
 npm install --save thelhc-redux-auth
 ```
 
-## Usage
-
-1. First you'll need to ensure `redux-thunk` middleware is applied to store already:
+1. redux-auth uses thunk actions, you'll need to ensure `redux-thunk` middleware is applied to the store:
 
     ```js
     import { createStore, applyMiddleware } from 'redux'
@@ -21,105 +19,129 @@ npm install --save thelhc-redux-auth
       )
     )
     ```
-    
+
 2. Install the reducer into the `auth` path of your `combineReducers` object:
 
     ```js
     import { combineReducers } from 'redux'
     import { reducer as authReducer } from 'thelhc-redux-auth'
-    
+
     const reducer = combineReducers({
       auth: authReducer,
       ...reducers // your other reducers
     })
     ```
-    
-3. Initialize the user session with `checkForUser` in your root component:
 
-    ```js
-    import React from 'react'
-    import { connect } from 'react-redux'
-    import axios from 'axios' // we require the axios http client object we want to attach interceptors on
-    import { checkForUser } from 'thelhc-redux-auth'
-    
-    class Root extends React.Component {
-      componentWillMount(){
-        this.props.dispatch( checkForUser( 
-          axios,                  // http client object
-          '/auth/token',          // your api endpoint to get a token if user session open in backend
-          '/api/account/user'     // your api endpoint to fetch/signin user with jwt token
-         ) )
-      }
-    }
-    ```
-    
-4. Setup interceptors for redux-auth to attach JWT tokens:
-
-    ```js
-    import { createInterceptors } from 'thelhc-redux-auth'
-    
-    createInterceptors( 
-      axios,                                  // axios http client object
-      store,                                  // your redux store object 
-      {                                       // options 
-        spoofBlacklist: [ '/api/admin/*' ]      // an array of url path expressions to block from user spoofing
-      }
-    )
-    ```
-4. Setup observers to keep local storage synced to store:
+4. redux-auth uses `redux-observers` to sync tokens with the HTML5 Storage Api.  Ensure redux-observers is installed and registers redux-auth observers with the store:
 
     ```js
     import { observe } from 'redux-observers'
     import { observers as authObservers } from 'thelhc-redux-auth'
-    
-    observe( 
-      store,                    // your redux store object 
+
+    observe(
+      store,                    // your redux store object
       [ ...authObservers ]      // an array of observers, including auth observers
     )
     ```
-    
+
+
+## Usage
+redux-auth integrates into a redux app via a single initializer function (`appInitializer`).  This initializer looks for a stored Json Web Token or makes a request to retrieve a token from a specified api destination in order to secure access for future asynchronous requests to a protected Json API service.  Once an access token is attained, it is dispatched to the store to be parsed and stored as an authenticated session.  Http client interceptors are then configured to automatically listen for new or refreshed tokens from subsequent requests which cascade to the store as necessary.  `appInitializer` ultimately terminates in a promise for the requesting app to handle success and failure callbacks.  
+
+```js
+import axios from 'axios'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import { observe } from 'redux-observers'
+import { Provider } from 'react-redux'
+import { reducer as authReducer,
+         observers as authObservers,
+         appInitializer } from 'thelhc-redux-auth'
+
+// create store with auth reducer and thunkMiddleware
+const store = createStore(
+    combineReducers({
+      auth: authReducer
+    }),
+    compose(
+      applyMiddleware( thunkMiddleware )
+    )
+)
+
+// observe auth observers
+observe( store, [ ...authObservers ] )
+
+appInitializer({
+  client: axios,                          // http client to use
+  store: store,                           // redux store
+  url: '/api/access',                     // url to request token
+  clientId: 'a9b8c7d6e5f4g3h2i1',         // unique Api key to post to url
+  afterSessionSuccess: ( token ) => {
+    return ( dispatch, getState ) => {
+      // callback thunk action after session is constructed
+    }
+  },
+  onSessionReject: () => {
+    return ( dispatch, getState ) => {
+      // callback when token is rejected (invalid, expired, or blacklisted)
+    }
+  }
+})
+  .then( ( result ) => {
+    // mount a react redux app
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById( 'app' )
+    )
+  })
+  .catch( error => {
+    // catch token request response error
+  })
+
+```
+
+
 ## API
 
 
-#### `checkForUser([client], [tokenEndpoint], [userEndpoint])`
+#### `appInitializer([config])`
 
-Root-level initiation for user auth session.  Checks for auth, fetches, and sets keys in store.
+Root-level initiation for app authentication session.
 
-  - `client` *(Object)*
+Available `config` options:
 
-    The HTTP client (Axios) instance used to make async requests.
-
-    Must be passed explicitly for redux-auth to attach interceptors.
-
-  - `tokenEndpoint` *(String)*
-
-    URL for retrieving valid JWT tokens for users authenticated in backend.  
-    
-    Expects response with token string if authenticated, or null/blank if not-authenticated.
-
-  - `userEndpoint` *(String)*
-
-    URL for retrieving user object with valid JWT token.  
-    
-    Expects response with JSON representation of user model.
-
-_This should be called only once at the root of the application after the redux store has been initialized, ideally in a high-level root component_
-
-#### `createInterceptors([client], [store])`
-
-Creates interceptors on Http client to pass JWT tokens on requests, and catch auth errors/rejections in responses.
-
-  - `client` *(Object)*
+  - `client` *(Object)* **required**
 
     The HTTP client (Axios) instance used to make async requests.
 
     Must be passed explicitly for redux-auth to attach interceptors.
 
-  - `store` *(Object)*
+  - `store` *(Object)* **required**
 
-    Redux store instance.
+    The redux store to dispatch actions to
 
-_This should be called only once at the root of the application before the React DOM is mounted/rendered_
+  - `url` *(String)* **required**
+
+    URL for retrieving Json Web Token for public access when no session present.  
+
+  - `clientId` *(String)* **required**
+
+    Unique api key to authenticate request to access URL
+
+  - `afterSessionSuccess` *(Function)*
+
+    Redux thunk action to after session has been successfully saved to store
+
+  - `onSessionReject` *(Function)*
+
+    Redux thunk action to call upon rejected api request
+
+
+_This should be called only once at the initialization of the application prior to any other async requests_
 
 #### `createIsAdminSelector([computationBlock])`
 
@@ -146,14 +168,6 @@ Selector to determine if authenticated user is spoofed.
 
     Redux state object
 
-#### `resetAuth([expireFlag = false])`
-
-Selector to determine if authenticated user is spoofed.
-
-  - `expireFlag` *(Boolean)*
-
-    When true, redux-auth will signal an expired flag to indicate the user session has been closed due to inactivity or rejected jwt.
-    
 #### `selectAbsoluteUser([state])`
 
 Select the authenticated user, ignoring spoofed user (if present)
@@ -169,35 +183,3 @@ Selects the authenticated user, defaulting to spoofUser first, the falling back 
   - `state` *(Object)*
 
     Redux state object
-
-#### `setUserAuth([user], [token = null])`
-
-Dispatch action to set authenticated user in store
-
-  - `user` *(Object)*
-
-    Authenticated user object.
-    
-  - `token` *(String)*
-
-    Pass a new JWT token to store.  (defaults to `token` key of user object)
-    
-#### `spoofUser([client], [spoofUserEndpoint], [params])`
-
-Dispatch action to retrieve a spoof user object and set to store
-
-  - `client` *(Object)*
-
-    The HTTP client (Axios) instance used to make async requests.
-
-    Must be passed explicitly for redux-auth to attach interceptors.
-
-  - `spoofUserEndpoint` *(String)*
-
-    URL to make POST request for a spoof user.  
-    
-    Expects JSON representation of spoofed user model.
-
-  - `params` *(Object)*
-
-    Parameters to send to [spoofUserEndpoint] API.  
