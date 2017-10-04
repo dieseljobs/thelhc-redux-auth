@@ -41,20 +41,6 @@ const createReducer = () => {
         }
       })
     },
-    [SET_AUTHENTICATED]( state, { val } ) {
-      return update( state, {
-        isAuthenticated: {
-          $set: val
-        }
-      })
-    },
-    [EXPIRE_FLAG]( state, { val } ) {
-      return update( state, {
-        expireFlag: {
-          $set: val
-        }
-      })
-    },
     [SET_SPOOF_USER]( state, { user } ) {
       return update( state, {
         spoofUser: {
