@@ -17,5 +17,7 @@ export const {
   setToken,
   setUser,
   setUserAuth,
-  STORED_TOKEN
+  STORED_TOKEN,
+  getTokenFromStorage,
+  isTokenRefreshable
 } = createAll()

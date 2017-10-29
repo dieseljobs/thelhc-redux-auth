@@ -12,7 +12,9 @@ import {
   setAuthenticated,
   setIsChecking,
   setToken,
-  setUser
+  setUser,
+  getTokenFromStorage,
+  isTokenRefreshable
 } from '../src'
 
 describe('exports', () => {
@@ -54,6 +56,12 @@ describe('exports', () => {
   })
   it('exports setUser', () => {
     expect(setUser).toBeTruthy()
+  })
+  it('exports getTokenFromStorage', () => {
+    expect(getTokenFromStorage).toBeTruthy()
+  })
+  it('exports isTokenRefreshable', () => {
+    expect(isTokenRefreshable).toBeTruthy()
   })
 
 })

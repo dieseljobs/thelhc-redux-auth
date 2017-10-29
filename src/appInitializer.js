@@ -1,6 +1,6 @@
-import { STORED_TOKEN, STORED_USER } from './constants'
 import { jwtToStore } from './actions'
 import { createInterceptors } from './interceptors'
+import { getTokenFromStorage, isTokenRefreshable } from './utils'
 
 /**
  * Initialize app promise
@@ -23,12 +23,10 @@ const appInitializer = ( config ) => {
   if ( !clientId ) throw "Error: missing 'clientId' property in appInitializer config"
 
   return new Promise( ( resolve, reject ) => {
-    const shortToken = sessionStorage.getItem( STORED_TOKEN )
-    let token = localStorage.getItem( STORED_TOKEN )
-    if ( shortToken ) token = shortToken
-    // @TODO make sure token is not expired
-    // stored token present, return self-resolving promise
-    if ( token ) {
+    const token = getTokenFromStorage()
+    // stored token present and not too old to refresh
+    // return self-resolving promise
+    if ( token && isTokenRefreshable( token )) {
       // dispatch token to store
       store.dispatch( jwtToStore( token, afterSessionSuccess ) )
       // setup interceptors

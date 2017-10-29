@@ -6,7 +6,7 @@ import * as interceptors from './interceptors'
 import createReducer from './reducer'
 import observers from './observers'
 import * as selectors from './selectors'
-
+import * as utils from './utils'
 
 const createAll = () => {
   return {
@@ -17,7 +17,8 @@ const createAll = () => {
     ...interceptors,
     reducer: createReducer(),
     observers,
-    ...selectors
+    ...selectors,
+    ...utils
   }
 }
 
