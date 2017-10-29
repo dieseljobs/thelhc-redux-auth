@@ -1,4 +1,16 @@
 /**
+ * Initial state of store branch
+ * @type {Object}
+ */
+export const INITIAL_STATE = {
+  asyncInProgress: false,
+  isChecking: false,
+  token: null,
+  user: {
+  }
+}
+
+/**
  * Key name for stored token
  * @type {String}
  */

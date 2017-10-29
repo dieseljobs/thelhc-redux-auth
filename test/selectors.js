@@ -1,9 +1,15 @@
 import expect from 'expect'
-import { selectAbsoluteUser, selectUser, isSpoof, createIsAdminSelector } from '../src/selectors'
+import { selectAbsoluteUser,
+         selectUser,
+         isSpoof,
+         isAuthenticated,
+         isAsyncInProgress,
+         createIsAdminSelector } from '../src/selectors'
 
 describe('selectors', () => {
   let state = {
     auth: {
+      asyncInProgress: false,
       isAuthenticated: true,
       isChecking: false,
       token: 'storedUserTokenabc123def456',
@@ -28,6 +34,14 @@ describe('selectors', () => {
 
   it('should select user (with spoof)', () => {
     expect( selectUser( state ) ).toEqual( state.auth.spoofUser)
+  })
+
+  it('should handle isAuthenticated', () => {
+    expect( isAuthenticated( state ) ).toEqual( true )
+  })
+
+  it('should handle isAsyncInProgress', () => {
+    expect( isAsyncInProgress( state ) ).toEqual( false )
   })
 
   it('should resolve is spoof when spoof user present', () => {

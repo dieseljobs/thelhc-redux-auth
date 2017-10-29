@@ -1,5 +1,6 @@
 import update from 'immutability-helper'
 import {
+  SET_ASYNC_IN_PROGRESS,
   SET_IS_CHECKING,
   SET_TOKEN,
   SET_USER,
@@ -7,19 +8,18 @@ import {
   SET_SPOOF_USER,
   EXPIRE_FLAG
 } from './actionTypes'
+import { INITIAL_STATE } from './constants'
 
 const createReducer = () => {
 
-  const initialState = {
-    isAuthenticated: false,
-    isChecking: false,
-    token: null,
-    expireFlag: false,
-    user: {
-    }
-  }
-
   const behaviors = {
+    [SET_ASYNC_IN_PROGRESS]( state, { val } ) {
+      return update( state, {
+        asyncInProgress: {
+          $set: val
+        }
+      })
+    },
     [SET_IS_CHECKING]( state, { val } ) {
       return update( state, {
         isChecking: {
@@ -41,20 +41,6 @@ const createReducer = () => {
         }
       })
     },
-    [SET_AUTHENTICATED]( state, { val } ) {
-      return update( state, {
-        isAuthenticated: {
-          $set: val
-        }
-      })
-    },
-    [EXPIRE_FLAG]( state, { val } ) {
-      return update( state, {
-        expireFlag: {
-          $set: val
-        }
-      })
-    },
     [SET_SPOOF_USER]( state, { user } ) {
       return update( state, {
         spoofUser: {
@@ -64,7 +50,7 @@ const createReducer = () => {
     }
   }
 
-  const reducer = ( state = initialState, action ) => {
+  const reducer = ( state = INITIAL_STATE, action ) => {
     const behavior = behaviors[action.type]
 
     return behavior ? behavior(state, action) : state

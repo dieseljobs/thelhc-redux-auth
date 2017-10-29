@@ -5,11 +5,13 @@ import {
   createInterceptors,
   createIsAdminSelector,
   isSpoof,
+  isAuthenticated,
+  isAsyncInProgress,
   observers,
   reducer,
   selectAbsoluteUser,
   selectUser,
-  setAuthenticated,
+  setAsyncInProgress,
   setIsChecking,
   setToken,
   setUser,
@@ -33,6 +35,12 @@ describe('exports', () => {
   it('exports isSpoof', () => {
     expect(isSpoof).toBeTruthy()
   })
+  it('exports isAuthenticated', () => {
+    expect(isAuthenticated).toBeTruthy()
+  })
+  it('exports isAsyncInProgress', () => {
+    expect(isAsyncInProgress).toBeTruthy()
+  })
   it('exports observers', () => {
     expect(observers).toBeTruthy()
   })
@@ -45,11 +53,11 @@ describe('exports', () => {
   it('exports selectUser', () => {
     expect(selectUser).toBeTruthy()
   })
+  it('exports setAsyncInProgress', () => {
+    expect(setAsyncInProgress).toBeTruthy()
+  })
   it('exports setIsChecking', () => {
     expect(setIsChecking).toBeTruthy()
-  })
-  it('exports setAuthenticated', () => {
-    expect(setAuthenticated).toBeTruthy()
   })
   it('exports setToken', () => {
     expect(setToken).toBeTruthy()

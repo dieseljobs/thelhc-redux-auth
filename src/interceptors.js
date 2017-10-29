@@ -110,7 +110,7 @@ export const createInterceptors = ( client, { dispatch, getState }, appConfig = 
     ( error ) => {
       const { onSessionReject, afterSessionReject, onUserReject } = appConfig
       // catch jwt rejection responses from api
-      if ( isTokenRejected( error.response ) ) {
+      if ( error.response && isTokenRejected( error.response ) ) {
         // always tear down token
         dispatch( setToken( '' ) )
         if ( onSessionReject ) {
@@ -119,7 +119,7 @@ export const createInterceptors = ( client, { dispatch, getState }, appConfig = 
           dispatch( jwtRejected( afterSessionReject ) )
         }
       // catch jwt rejection specific to bad user
-      } else if ( isUserRejected( error.response ) ) {
+      } else if ( error.response && isUserRejected( error.response ) ) {
         // always tear down token
         dispatch( setToken( '' ) )
         if ( onUserReject ) {

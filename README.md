@@ -168,6 +168,22 @@ Selector to determine if authenticated user is spoofed.
 
     Redux state object
 
+#### `isAuthenticated([state])`
+
+Selector to determine if user authenticated.
+
+  - `state` *(Object)*
+
+    Redux state object
+
+#### `isAsyncInProgress([state])`
+
+Selector to determine if async request is in progress.
+
+  - `state` *(Object)*
+
+    Redux state object
+
 #### `selectAbsoluteUser([state])`
 
 Select the authenticated user, ignoring spoofed user (if present)

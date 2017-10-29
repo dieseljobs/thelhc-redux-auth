@@ -1,47 +1,34 @@
 import expect from 'expect'
 import createReducer from '../src/reducer'
-import { setIsChecking,
+import { setAsyncInProgress,
+         setIsChecking,
          setToken,
          setUser,
-         setAuthenticated,
          expire,
          setSpoofUser } from '../src/actions'
+import { INITIAL_STATE } from '../src/constants'
 
 const reducer = createReducer()
 
 describe('reducer', () => {
 
   it('should handle initial state', () => {
-    expect( reducer( undefined, { type: '@@INIT' } ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: false,
-      token: null,
-      expireFlag: false,
-      user: {
-      }
-    })
+    expect( reducer( undefined, { type: '@@INIT' } ) ).toEqual(INITIAL_STATE)
+  })
+
+  it('should handle SET_ASYNC_IN_PROGRESS', () => {
+    const expected = Object.assign({}, INITIAL_STATE, { asyncInProgress: true })
+    expect( reducer( undefined, setAsyncInProgress( true ) ) ).toEqual(expected)
   })
 
   it('should handle SET_IS_CHECKING', () => {
-    expect( reducer( undefined, setIsChecking( true ) ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: true,
-      token: null,
-      expireFlag: false,
-      user: {
-      }
-    })
+    const expected = Object.assign({}, INITIAL_STATE, { isChecking: true })
+    expect( reducer( undefined, setIsChecking( true ) ) ).toEqual(expected)
   })
 
   it('should handle SET_TOKEN', () => {
-    expect( reducer( undefined, setToken( 'abc123def456' ) ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: false,
-      token: 'abc123def456',
-      expireFlag: false,
-      user: {
-      }
-    })
+    const expected = Object.assign({}, INITIAL_STATE, { token: 'abc123def456' })
+    expect( reducer( undefined, setToken( 'abc123def456' ) ) ).toEqual(expected)
   })
 
   it('should handle SET_USER', () => {
@@ -50,24 +37,8 @@ describe('reducer', () => {
       fname: 'Aaron',
       lname: 'Kaz'
     }
-    expect( reducer( undefined, setUser( user ) ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: false,
-      token: null,
-      expireFlag: false,
-      user: user
-    })
-  })
-
-  it('should handle SET_AUTHENTICATED', () => {
-    expect( reducer( undefined, setAuthenticated( true ) ) ).toEqual({
-      isAuthenticated: true,
-      isChecking: false,
-      token: null,
-      expireFlag: false,
-      user: {
-      }
-    })
+    const expected = Object.assign({}, INITIAL_STATE, { user })
+    expect( reducer( undefined, setUser( user ) ) ).toEqual(expected)
   })
 
   it('should handle SET_SPOOF_USER', () => {
@@ -76,15 +47,8 @@ describe('reducer', () => {
       fname: 'Spoof',
       lname: 'Dude'
     }
-    expect( reducer( undefined, setSpoofUser( spoofUser ) ) ).toEqual({
-      isAuthenticated: false,
-      isChecking: false,
-      token: null,
-      expireFlag: false,
-      user: {
-      },
-      spoofUser: spoofUser
-    })
+    const expected = Object.assign({}, INITIAL_STATE, { spoofUser })
+    expect( reducer( undefined, setSpoofUser( spoofUser ) ) ).toEqual(expected)
   })
 
 })

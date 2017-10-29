@@ -1,6 +1,26 @@
 import { createSelector } from 'reselect'
 
 /**
+ * Select asyncInProgress status
+ *
+ * @param  {Object}  state
+ * @return {Boolean}
+ */
+export const isAsyncInProgress = ( state ) => {
+  return state.auth.asyncInProgress
+}
+
+/**
+ * Compute if user is authenticated from user object
+ *
+ * @param  {Object}  state
+ * @return {Boolean}
+ */
+export const isAuthenticated = ( state ) => {
+  return state.auth.user && Object.keys( state.auth.user ).length > 0
+}
+
+/**
  * Get the absolute signed-in user disregarding spoofUser
  *
  * @param  {Object} state
