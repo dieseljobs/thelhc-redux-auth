@@ -24,7 +24,7 @@ describe('utils', () => {
   })
 
   it('handles isTokenRefreshable', () => {
-    expect(isTokenRefreshable( jwt )).toEqual( true )
+    expect(isTokenRefreshable( jwt )).toEqual( false )
   })
 
 })
