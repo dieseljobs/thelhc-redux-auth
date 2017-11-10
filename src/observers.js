@@ -27,10 +27,6 @@ const tokenObserver = observer(
         localStorage.setItem( STORED_TOKEN, current )
       // else sync token to sessionStorage if not remembering
       } else {
-        // check and remove localStorage if present
-        if ( localStorage.getItem( STORED_TOKEN ) ) {
-          localStorage.removeItem( STORED_TOKEN )
-        }
         // set sessionStorage
         sessionStorage.setItem( STORED_TOKEN, current )
       }

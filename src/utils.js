@@ -1,7 +1,12 @@
 import { STORED_TOKEN } from './constants'
 import { parseJwt } from 'lhc-js-lib'
 
-export const REFRESH_TTL = 20160
+/**
+ * TTL jwt can be refreshed in seconds (2 weeks)
+ *
+ * @type {Integer}
+ */
+export const REFRESH_TTL = 1209600
 
 /**
  * Get token from storage
