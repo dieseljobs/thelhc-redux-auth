@@ -20,13 +20,6 @@ const createReducer = () => {
         }
       })
     },
-    [SET_IS_CHECKING]( state, { val } ) {
-      return update( state, {
-        isChecking: {
-          $set: val
-        }
-      })
-    },
     [SET_TOKEN]( state, { token } ) {
       return update( state, {
         token: {

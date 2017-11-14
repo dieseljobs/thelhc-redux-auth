@@ -1,7 +1,6 @@
 import expect from 'expect'
 import createReducer from '../src/reducer'
 import { setAsyncInProgress,
-         setIsChecking,
          setToken,
          setUser,
          expire,
@@ -19,11 +18,6 @@ describe('reducer', () => {
   it('should handle SET_ASYNC_IN_PROGRESS', () => {
     const expected = Object.assign({}, INITIAL_STATE, { asyncInProgress: true })
     expect( reducer( undefined, setAsyncInProgress( true ) ) ).toEqual(expected)
-  })
-
-  it('should handle SET_IS_CHECKING', () => {
-    const expected = Object.assign({}, INITIAL_STATE, { isChecking: true })
-    expect( reducer( undefined, setIsChecking( true ) ) ).toEqual(expected)
   })
 
   it('should handle SET_TOKEN', () => {

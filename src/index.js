@@ -15,7 +15,6 @@ export const {
   selectAbsoluteUser,
   selectUser,
   setAsyncInProgress,
-  setIsChecking,
   setToken,
   setUser,
   setUserAuth,

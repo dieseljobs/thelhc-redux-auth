@@ -12,7 +12,6 @@ import {
   selectAbsoluteUser,
   selectUser,
   setAsyncInProgress,
-  setIsChecking,
   setToken,
   setUser,
   getTokenFromStorage,
@@ -55,9 +54,6 @@ describe('exports', () => {
   })
   it('exports setAsyncInProgress', () => {
     expect(setAsyncInProgress).toBeTruthy()
-  })
-  it('exports setIsChecking', () => {
-    expect(setIsChecking).toBeTruthy()
   })
   it('exports setToken', () => {
     expect(setToken).toBeTruthy()

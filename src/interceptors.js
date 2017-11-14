@@ -1,5 +1,6 @@
-import { STORED_TOKEN, TOKEN_ERROR_RESPONSES, USER_ERROR_RESPONSES } from './constants'
+import { TOKEN_ERROR_RESPONSES, USER_ERROR_RESPONSES } from './constants'
 import { jwtToStore, jwtRejected, setToken } from './actions'
+import { getTokenFromStorage } from './utils'
 
 /**
  * Check if response is rejected by API
@@ -66,19 +67,16 @@ export const isUserRejected = ( response ) => {
 /**
  * Create interceptors for http service and provided store
  *
- * @param  {Function} dispatch    from store
- * @param  {Function} getState    from store
+ * @param  {Object} httpClient
+ * @param  {Function} dispatch    passed from action or store object
  * @param  {Object} [config={}]
  * @return {void}
  */
-export const createInterceptors = ( client, { dispatch, getState }, appConfig = {} ) => {
+export const createInterceptors = ( httpClient, { dispatch }, callbacks = {} ) => {
 
-  client.interceptors.request.use(
+  httpClient.interceptors.request.use(
     ( config ) => {
-      const shortToken = sessionStorage.getItem( STORED_TOKEN )
-      let token = localStorage.getItem( STORED_TOKEN )
-      if ( shortToken ) token = shortToken
-
+      const token = getTokenFromStorage()
       // Set Authorization header with token
       if ( token ) {
         config.headers.Authorization = 'Bearer ' + token
@@ -87,20 +85,21 @@ export const createInterceptors = ( client, { dispatch, getState }, appConfig = 
       return config
     },
     ( error ) => {
-      // Do something with request error
-
       return Promise.reject( error )
     }
   )
 
-  client.interceptors.response.use(
+  httpClient.interceptors.response.use(
     ( response ) => {
+      /*
       // Look for token in response body
       if ( response.data && response.data.token ) {
         const { data: { token } } = response
         dispatch( jwtToStore( token ) )
-      // Else look for refreshed auth token in headers
-      } else if ( response.headers && response.headers.authorization ) {
+      }
+      */
+      // look for refreshed auth token in headers
+      if ( response.headers && response.headers.authorization ) {
         const token = response.headers.authorization.replace( /Bearer\s/, '' )
         dispatch( jwtToStore( token ) )
       }
@@ -108,13 +107,15 @@ export const createInterceptors = ( client, { dispatch, getState }, appConfig = 
       return response
     },
     ( error ) => {
-      const { onSessionReject, afterSessionReject, onUserReject } = appConfig
+      const { onSessionReject, afterSessionReject, onUserReject } = callbacks
       // catch jwt rejection responses from api
       if ( error.response && isTokenRejected( error.response ) ) {
         // always tear down token
         dispatch( setToken( '' ) )
+        // run custom reject action if provided
         if ( onSessionReject ) {
           dispatch( onSessionReject() )
+        // otherwise run default reject action and pass afterSessionReject if defined
         } else {
           dispatch( jwtRejected( afterSessionReject ) )
         }
