@@ -44,4 +44,6 @@ const tokenObserver = observer(
   }
 )
 
+export const observers = [ tokenObserver ]
+
 export default [ tokenObserver ]

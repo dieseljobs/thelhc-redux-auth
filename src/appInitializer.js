@@ -7,7 +7,7 @@ import { getTokenFromStorage, isTokenRefreshable } from './utils'
  *
  * @return {Promise}
  */
-const appInitializer = ( config ) => {
+export const appInitializer = ( config ) => {
   if ( !config ) throw "Error: missing configuration appInitializer()"
   const { client,
           store,

@@ -1,13 +1,11 @@
 import expect from 'expect'
-import createReducer from '../src/reducer'
+import reducer from '../src/reducer'
 import { setAsyncInProgress,
          setToken,
          setUser,
          expire,
          setSpoofUser } from '../src/actions'
 import { INITIAL_STATE } from '../src/constants'
-
-const reducer = createReducer()
 
 describe('reducer', () => {
 

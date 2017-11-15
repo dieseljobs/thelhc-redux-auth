@@ -10,46 +10,41 @@ import {
 } from './actionTypes'
 import { INITIAL_STATE } from './constants'
 
-const createReducer = () => {
-
-  const behaviors = {
-    [SET_ASYNC_IN_PROGRESS]( state, { val } ) {
-      return update( state, {
-        asyncInProgress: {
-          $set: val
-        }
-      })
-    },
-    [SET_TOKEN]( state, { token } ) {
-      return update( state, {
-        token: {
-          $set: token
-        }
-      })
-    },
-    [SET_USER]( state, { user } ) {
-      return update( state, {
-        user: {
-          $set: user
-        }
-      })
-    },
-    [SET_SPOOF_USER]( state, { user } ) {
-      return update( state, {
-        spoofUser: {
-          $set: user
-        }
-      })
-    }
+const behaviors = {
+  [SET_ASYNC_IN_PROGRESS]( state, { val } ) {
+    return update( state, {
+      asyncInProgress: {
+        $set: val
+      }
+    })
+  },
+  [SET_TOKEN]( state, { token } ) {
+    return update( state, {
+      token: {
+        $set: token
+      }
+    })
+  },
+  [SET_USER]( state, { user } ) {
+    return update( state, {
+      user: {
+        $set: user
+      }
+    })
+  },
+  [SET_SPOOF_USER]( state, { user } ) {
+    return update( state, {
+      spoofUser: {
+        $set: user
+      }
+    })
   }
-
-  const reducer = ( state = INITIAL_STATE, action ) => {
-    const behavior = behaviors[action.type]
-
-    return behavior ? behavior(state, action) : state
-  }
-
-  return reducer
 }
 
-export default createReducer
+export const reducer = ( state = INITIAL_STATE, action ) => {
+  const behavior = behaviors[action.type]
+
+  return behavior ? behavior(state, action) : state
+}
+
+export default reducer
