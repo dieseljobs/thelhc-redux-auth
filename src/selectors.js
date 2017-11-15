@@ -21,6 +21,16 @@ export const isAuthenticated = ( state ) => {
 }
 
 /**
+ * Select token 
+ *  
+ * @param  {Object} state 
+ * @return {String}       
+ */
+export const selectToken = state => {
+  return state.auth.token
+}
+
+/**
  * Get the absolute signed-in user disregarding spoofUser
  *
  * @param  {Object} state
