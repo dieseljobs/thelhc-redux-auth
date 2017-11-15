@@ -28,10 +28,6 @@ import {
   setSpoofUser
 } from '../src'
 
-import * as all from '../src'
-
-console.log(all)
-
 describe('exports', () => {
   it('exports AuthConnect', () => {
     expect(AuthConnect).toBeTruthy()

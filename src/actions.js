@@ -111,6 +111,7 @@ export const resolveToken = ( httpClient, tokenUrl, tokenParams, callbacks = {} 
       .then( token => {
         const afterSessionSuccess = callbacks.afterSessionSuccess || null
         dispatch( jwtToStore( token, afterSessionSuccess ) )
+        dispatch( configureInterceptors( httpClient, callbacks ) )
         dispatch( setAsyncInProgress( false ) )
       })
       .catch( err => {
