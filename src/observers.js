@@ -1,5 +1,5 @@
 import { observer } from 'redux-observers'
-import { parseJwt } from 'lhc-js-lib'
+import { parseJwt, setAndBroadcastSession, removeAndBroadcastSession } from 'lhc-js-lib'
 import { STORED_TOKEN } from './constants'
 
 /**
@@ -21,20 +21,20 @@ const tokenObserver = observer(
       if ( rem ) {
         // check and remove sessionStorage if present
         if ( sessionStorage.getItem( STORED_TOKEN ) ) {
-          sessionStorage.removeItem( STORED_TOKEN )
+          removeAndBroadcastSession( STORED_TOKEN )
         }
         // set token to localStorage
         localStorage.setItem( STORED_TOKEN, current )
       // else sync token to sessionStorage if not remembering
       } else {
         // set sessionStorage
-        sessionStorage.setItem( STORED_TOKEN, current )
+        setAndBroadcastSession( STORED_TOKEN, current )
       }
     // else remove locally stored values if token reset (empty|null)
     } else {
       // remove sessionStorage if present
       if ( sessionStorage.getItem( STORED_TOKEN ) ) {
-        sessionStorage.removeItem( STORED_TOKEN )
+        removeAndBroadcastSession( STORED_TOKEN )
       }
       // remove localStorage if present
       if ( localStorage.getItem( STORED_TOKEN ) ) {
