@@ -199,3 +199,4 @@ Selects the authenticated user, defaulting to spoofUser first, the falling back 
   - `state` *(Object)*
 
     Redux state object
+    
