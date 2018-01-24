@@ -25,7 +25,8 @@ import {
   setAsyncInProgress,
   setToken,
   setUser,
-  setSpoofUser
+  setSpoofUser,
+  storeToken
 } from '../src'
 
 describe('exports', () => {
@@ -107,5 +108,8 @@ describe('exports', () => {
   it('exports setSpoofUser', () => {
     expect(setSpoofUser).toBeTruthy()
   })
-
+  it('exports storeToken', () => {
+    expect(storeToken).toBeTruthy()
+  })
+  
 })
