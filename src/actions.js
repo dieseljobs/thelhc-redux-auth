@@ -62,6 +62,17 @@ export const setSpoofUser = ( user ) => {
   }
 }
 
+export const getTokenFromStorageAsync = () => {
+  const token = getTokenFromStorage()
+  if ( token instanceof Promise ) {
+    return token
+  } else {
+    return new Promise( resolve => {
+      resolve( token )
+    })
+  }
+}
+
 /**
  * Retrieve token 
  * Get from storage if present ( and not expired ) or issue request to tokenUrl
@@ -77,23 +88,25 @@ export const retrieveToken = ( httpClient, tokenUrl, tokenParams ) => {
       if ( !httpClient ) throw "Error: undefined httpClient argument in 'retrieveToken'"
       if ( !tokenUrl ) throw "Error: undefined tokenUrl argument in 'retrieveToken'"
       
-      const token = getTokenFromStorage()
-      // stored token present and not too old to refresh
-      // return self-resolving promise
-      if ( token && isTokenRefreshable( token )) {
-        resolve( token )
-      // else request new access token
-      } else {
-        httpClient.post( tokenUrl, tokenParams )
-          .then( response => {
-            const { data: { token } } = response
+      getTokenFromStorageAsync()
+        .then( token => {
+          // stored token present and not too old to refresh
+          // return self-resolving promise
+          if ( token && isTokenRefreshable( token )) {
             resolve( token )
-          })
-          .catch( error => {
-            // reject promise with error
-            reject( error )
-          })
-      }
+          // else request new access token
+          } else {
+            httpClient.post( tokenUrl, tokenParams )
+              .then( response => {
+                const { data: { token } } = response
+                resolve( token )
+              })
+              .catch( error => {
+                // reject promise with error
+                reject( error )
+              })
+          }
+        })
     })
   }
 }
@@ -135,9 +148,9 @@ export const resolveToken = ( httpClient, tokenUrl, tokenParams, callbacks = {} 
  * @return {void}                
  */
 export const configureInterceptors = ( httpClient, callbacks = {} ) => {
-  return dispatch => {
+  return ( dispatch, getState ) => {
     if ( !httpClient ) throw "Error: undefined httpClient argument in 'retrieveToken'"
-    createInterceptors( httpClient, { dispatch }, callbacks )
+    createInterceptors( httpClient, { dispatch, getState }, callbacks )
   }
 }
 

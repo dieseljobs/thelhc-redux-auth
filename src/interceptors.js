@@ -1,6 +1,7 @@
 import { TOKEN_ERROR_RESPONSES, USER_ERROR_RESPONSES } from './constants'
 import { jwtToStore, jwtRejected, setToken } from './actions'
 import { getTokenFromStorage } from './utils'
+import { selectToken } from './selectors'
 
 /**
  * Check if response is rejected by API
@@ -72,11 +73,17 @@ export const isUserRejected = ( response ) => {
  * @param  {Object} [config={}]
  * @return {void}
  */
-export const createInterceptors = ( httpClient, { dispatch }, callbacks = {} ) => {
+export const createInterceptors = ( httpClient, { dispatch, getState }, callbacks = {} ) => {
 
   httpClient.interceptors.request.use(
     ( config ) => {
-      const token = getTokenFromStorage()
+      let token
+      if ( typeof localStorage !== 'undefined' ) {
+        token = getTokenFromStorage()
+      } else {
+        token = selectToken( getState() )
+      }
+      
       // Set Authorization header with token
       if ( token ) {
         config.headers.Authorization = 'Bearer ' + token

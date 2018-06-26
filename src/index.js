@@ -1,5 +1,4 @@
 export * from './actions'
-export * from './appInitializer'
 export * from './components'
 export * from './config'
 export * from './constants'

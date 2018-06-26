@@ -1,6 +1,5 @@
 import expect from 'expect'
 import {
-  appInitializer,
   AuthConnect,
   config,
   configureInterceptors,
@@ -32,9 +31,6 @@ import {
 describe('exports', () => {
   it('exports AuthConnect', () => {
     expect(AuthConnect).toBeTruthy()
-  })
-  it('exports appInitializer', () => {
-    expect(appInitializer).toBeTruthy()
   })
   it('exports config', () => {
     expect(config).toBeTruthy()
