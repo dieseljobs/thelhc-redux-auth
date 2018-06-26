@@ -1,6 +1,7 @@
 import expect from 'expect'
 import { STORED_TOKEN } from '../src/constants'
-import { getTokenFromStorage, storeToken, isTokenRefreshable } from '../src/utils'
+import { getTokenFromStorage, storeToken, removeTokenFromStorage, isTokenRefreshable } from '../src/utils'
+import config from '../src/config'
 
 describe('utils', () => {
 
@@ -11,6 +12,10 @@ describe('utils', () => {
   afterEach(() => {
     localStorage.clear()
     sessionStorage.clear()
+    // reset config
+    config.getTokenFromStorage = null
+    config.setTokenToStorage = null
+    config.removeTokenFromStorage = null
   })
 
   it('handles storeToken', () => {
@@ -23,6 +28,13 @@ describe('utils', () => {
     expect( sessionStorage.getItem( STORED_TOKEN ) ).toEqual( userJwtNoRem )
   })
 
+  it('should store token with custom config', () => {
+    config.setTokenToStorage = ( token ) => {
+      return `CUSTOM STORAGE ${token}`
+    }
+    expect(storeToken( userJwt )).toEqual(`CUSTOM STORAGE ${userJwt}`)
+  })
+
   it('handles getTokenFromStorage', () => {
     localStorage.setItem( STORED_TOKEN, jwt )
     expect(getTokenFromStorage()).toEqual( jwt )
@@ -31,6 +43,32 @@ describe('utils', () => {
   it('handles getTokenFromStorage with sessionStorage', () => {
     sessionStorage.setItem( STORED_TOKEN, userJwt )
     expect(getTokenFromStorage()).toEqual( userJwt )
+  })
+
+  it('should get stored token with custom config', () => {
+    config.getTokenFromStorage = ( token ) => {
+      return `CUSTOM STORAGE`
+    }
+    expect(getTokenFromStorage()).toEqual(`CUSTOM STORAGE`)
+  })
+
+  it('handles removeTokenFromStorage', () => {
+    localStorage.setItem( STORED_TOKEN, jwt )
+    removeTokenFromStorage()
+    expect( localStorage.getItem( STORED_TOKEN ) ).toEqual( null )
+  })
+
+  it('handles removeTokenFromStorage with sessionStorage', () => {
+    sessionStorage.setItem( STORED_TOKEN, jwt )
+    removeTokenFromStorage()
+    expect( sessionStorage.getItem( STORED_TOKEN ) ).toEqual( null )
+  })
+
+  it('should remove stored token with custom config', () => {
+    config.removeTokenFromStorage = ( token ) => {
+      return `REMOVE CUSTOM STORAGE`
+    }
+    expect(removeTokenFromStorage()).toEqual(`REMOVE CUSTOM STORAGE`)
   })
 
   it('handles isTokenRefreshable', () => {

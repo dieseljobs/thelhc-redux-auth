@@ -1,5 +1,6 @@
 import { parseJwt, setAndBroadcastSession, removeAndBroadcastSession } from 'lhc-js-lib'
 import { STORED_TOKEN } from './constants'
+import config from './config'
 
 /**
  * TTL jwt can be refreshed in seconds (2 weeks)
@@ -14,6 +15,9 @@ export const REFRESH_TTL = 1209600
  * @return {String}
  */
 export const getTokenFromStorage = () => {
+  if ( config.getTokenFromStorage && typeof config.getTokenFromStorage === 'function' ) {
+    return config.getTokenFromStorage.call( null )
+  }
   const shortToken = sessionStorage.getItem( STORED_TOKEN )
   let token = localStorage.getItem( STORED_TOKEN )
   if ( shortToken ) token = shortToken
@@ -28,6 +32,9 @@ export const getTokenFromStorage = () => {
  * @return {void}       
  */
 export const storeToken = ( token ) => {
+  if ( config.setTokenToStorage && typeof config.setTokenToStorage === 'function' ) {
+    return config.setTokenToStorage.call( null, token )
+  }
   // set remember var, default to true in case claim is not present
   const claims = parseJwt( token, 1 )
   const rem = claims.hasOwnProperty( 'rem' ) ? claims.rem : true
@@ -53,6 +60,9 @@ export const storeToken = ( token ) => {
  * @return {void}
  */
 export const removeTokenFromStorage = () => {
+  if ( config.removeTokenFromStorage && typeof config.removeTokenFromStorage === 'function' ) {
+    return config.removeTokenFromStorage.call( null )
+  }
   // remove sessionStorage if present
   if ( sessionStorage.getItem( STORED_TOKEN ) ) {
     removeAndBroadcastSession( STORED_TOKEN )

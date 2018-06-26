@@ -29,14 +29,20 @@ describe('actions', () => {
   const userJwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJpYXQiOjE1MDYxNzkxMjIsImV4cCI6MTUwNjE4MjcyMiwibmJmIjoxNTA2MTc5MTIyLCJqdGkiOiJoT2tENjR3WWhZbWxocXc0Iiwic3ViIjoxLCJhdWQiOjEsInVzciI6eyJpZCI6MSwibmFtZSI6IkFhcm9uIn19.OOqWuhqX2trxhOVTYzoQRHTQI33D6m-IEjyNcBcc3lg"
   const userJwtNoRem = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJpYXQiOjE1MDYxODEzODMsImV4cCI6MTUwNjE4NDk4MywibmJmIjoxNTA2MTgxMzgzLCJqdGkiOiI5YVpDZndmWXBpRDVEUXVlIiwic3ViIjoxLCJhdWQiOjEsInVzciI6eyJpZCI6MSwibmFtZSI6IkFhcm9uIn0sInJlbSI6ZmFsc2V9.ISA3cTw5FBJk8Pik00pin69Le_BOepDpzI1ZC50hZk4"
 
-  it('should observe token changes in store for remember-able token', () => {
+  it('should store token changes for remember-able token', () => {
     store.dispatch( setToken( userJwt ) )
     expect( localStorage.getItem( STORED_TOKEN ) ).toEqual( userJwt )
   })
 
-  it('should observe token changes in store for non-remember-able token', () => {
+  it('should store token changes for non-remember-able token', () => {
     store.dispatch( setToken( userJwtNoRem ) )
     expect( sessionStorage.getItem( STORED_TOKEN ) ).toEqual( userJwtNoRem )
+  })
+
+  it('should remove token when token blank', () => {
+    store.dispatch( setToken( userJwt ) )
+    store.dispatch( setToken( '' ) )
+    expect( localStorage.getItem( STORED_TOKEN ) ).toEqual( null )
   })
  
   it('should handle retrieveToken httpClient rejection', () => {

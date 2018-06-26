@@ -2,6 +2,7 @@ import expect from 'expect'
 import {
   appInitializer,
   AuthConnect,
+  config,
   configureInterceptors,
   createInterceptors,
   createIsAdminSelector,
@@ -34,6 +35,9 @@ describe('exports', () => {
   })
   it('exports appInitializer', () => {
     expect(appInitializer).toBeTruthy()
+  })
+  it('exports config', () => {
+    expect(config).toBeTruthy()
   })
   it('exports configureInterceptors', () => {
     expect(configureInterceptors).toBeTruthy()
