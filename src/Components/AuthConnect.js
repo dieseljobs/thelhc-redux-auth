@@ -38,7 +38,7 @@ export class AuthConnect extends React.Component {
     
     if ( checked && !loading && token ) {
       return (
-        <div>{children}</div>
+        <React.Fragment>{children}</React.Fragment>
       )
     } else if ( checked && !loading && !token && ErrorComp ) {
       return <ErrorComp />
