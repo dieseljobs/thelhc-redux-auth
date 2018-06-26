@@ -15,7 +15,6 @@ import {
   isUserRejected,
   jwtToStore,
   jwtRejected,
-  observers,
   reducer,
   resolveToken,
   retrieveToken,
@@ -43,7 +42,7 @@ describe('exports', () => {
     expect(createInterceptors).toBeTruthy()
   })
   it('exports createIsAdminSelector', () => {
-    expect(createInterceptors).toBeTruthy()
+    expect(createIsAdminSelector).toBeTruthy()
   })
   it('exports getTokenFromStorage', () => {
     expect(getTokenFromStorage).toBeTruthy()
@@ -74,9 +73,6 @@ describe('exports', () => {
   })
   it('exports jwtRejected', () => {
     expect(jwtRejected).toBeTruthy()
-  })
-  it('exports observers', () => {
-    expect(observers).toBeTruthy()
   })
   it('exports reducer', () => {
     expect(reducer).toBeTruthy()

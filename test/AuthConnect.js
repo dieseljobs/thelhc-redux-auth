@@ -6,10 +6,8 @@ import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import { INITIAL_STATE } from '../src/constants'
 import { AuthConnect } from '../src/components/AuthConnect'
-import * as actions from '../src/actions'
 
 const Foo = ( props ) => {
   return (
@@ -85,7 +83,7 @@ describe('AuthConnect component', () => {
   it('should render with token and loading update', () => {
     wrapper.setProps({ loading: true, token: 'bar' })
     wrapper.setProps({ loading: false })
-    expect(wrapper.html()).toEqual('<div><div>hello world</div></div>')
+    expect(wrapper.html()).toEqual('<div>hello world</div>')
   })
   
   it('should render error component', () => {

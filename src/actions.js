@@ -1,7 +1,7 @@
 import { parseJwt } from 'lhc-js-lib'
 import * as types from './actionTypes'
 import { isAuthenticated, isSpoof } from './selectors'
-import { getTokenFromStorage, isTokenRefreshable } from './utils'
+import { storeToken, removeTokenFromStorage, getTokenFromStorage, isTokenRefreshable } from './utils'
 import { createInterceptors } from './interceptors'
 
 /**
@@ -23,6 +23,13 @@ export const setAsyncInProgress = ( val ) => {
  * @return {object}
  */
 export const setToken = ( token ) => {
+  // if token present
+  if ( token ) {
+    storeToken( token )
+  // else remove locally stored values if token reset (empty|null)
+  } else {
+    removeTokenFromStorage()
+  }
   return ({
     type: types.SET_TOKEN,
     token
