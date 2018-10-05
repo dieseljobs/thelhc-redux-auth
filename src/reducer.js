@@ -1,4 +1,3 @@
-import update from 'immutability-helper'
 import {
   SET_ASYNC_IN_PROGRESS,
   SET_IS_CHECKING,
@@ -12,31 +11,23 @@ import { INITIAL_STATE } from './constants'
 
 const behaviors = {
   [SET_ASYNC_IN_PROGRESS]( state, { val } ) {
-    return update( state, {
-      asyncInProgress: {
-        $set: val
-      }
+    return Object.assign({}, state, {
+      asyncInProgress: val
     })
   },
   [SET_TOKEN]( state, { token } ) {
-    return update( state, {
-      token: {
-        $set: token
-      }
+    return Object.assign({}, state, {
+      token
     })
   },
   [SET_USER]( state, { user } ) {
-    return update( state, {
-      user: {
-        $set: user
-      }
+    return Object.assign({}, state, {
+      user
     })
   },
   [SET_SPOOF_USER]( state, { user } ) {
-    return update( state, {
-      spoofUser: {
-        $set: user
-      }
+    return Object.assign({}, state, {
+      spoofUser: user
     })
   }
 }

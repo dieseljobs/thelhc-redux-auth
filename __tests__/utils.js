@@ -1,4 +1,3 @@
-import expect from 'expect'
 import { STORED_TOKEN } from '../src/constants'
 import { getTokenFromStorage, storeToken, removeTokenFromStorage, isTokenRefreshable } from '../src/utils'
 import config from '../src/config'
