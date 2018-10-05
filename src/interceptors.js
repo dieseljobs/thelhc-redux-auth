@@ -133,6 +133,12 @@ export const createInterceptors = ( httpClient, { dispatch, getState }, callback
         if ( onUserReject ) {
           dispatch( onUserReject() )
         }
+      } else {
+        // look for refreshed auth token in headers
+        if ( error.response.headers && error.response.headers.authorization ) {
+          const token = error.response.headers.authorization.replace( /Bearer\s/, '' )
+          dispatch( jwtToStore( token ) )
+        }
       }
 
       return Promise.reject( error )
