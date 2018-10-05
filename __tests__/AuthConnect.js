@@ -1,8 +1,6 @@
 import React from 'react'
 import { configure, mount, shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import expect from 'expect'
-import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import axios from 'axios'
@@ -33,7 +31,7 @@ describe('AuthConnect component', () => {
     store = configureMockStore(middlewares)({
       auth: INITIAL_STATE
     })
-    sinon.spy(AuthConnect.prototype, 'componentDidMount')
+    jest.spyOn(AuthConnect.prototype, 'componentDidMount')
     wrapper = mount(
       <AuthConnect 
         dispatch={store.dispatch} 
@@ -48,7 +46,7 @@ describe('AuthConnect component', () => {
   
   afterEach(() => {
     wrapper.unmount()
-    AuthConnect.prototype.componentDidMount.restore()
+    AuthConnect.prototype.componentDidMount.mockRestore()
   })
   
   it('should render', () => {
@@ -64,7 +62,7 @@ describe('AuthConnect component', () => {
   })
   
   it('calls componentDidMount', () => {
-    expect(AuthConnect.prototype.componentDidMount.calledOnce).toEqual(true);
+    expect(AuthConnect.prototype.componentDidMount).toHaveBeenCalled()
   })
   
   it('should render null default', () => {
