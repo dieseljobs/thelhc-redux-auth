@@ -30,7 +30,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^23.6.0",
-    "lhc-js-lib": "^2.2.2",
+    "lhc-js-lib": "^2.2.3",
     "path-to-regexp": "^1.7.0",
     "prop-types": "^15.6.0",
     "react": "^16.3.0",
